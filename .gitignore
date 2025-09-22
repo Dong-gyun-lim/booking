@@ -1,0 +1,17 @@
+node_modules/
+.next/
+dist/
+out/
+.env*
+npm-debug.log*
+
+
+
+.gradle/
+build/
+out/
+*.iml
+.idea/
+*.log
+
+.DS_Store
