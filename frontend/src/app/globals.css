@@ -1,0 +1,116 @@
+/*
+이 CSS 파일에는 몇 가지 잠재적인 문제가 있습니다.
+
+1. @custom-variant, @theme 문법:
+- `@custom-variant dark (&:is(.dark *));` 와 `@theme inline { ... }` 구문은 표준 CSS, TailwindCSS, 또는 PostCSS에서 지원되지 않는 문법입니다.
+- 이 문법은 일부 CSS-in-JS 라이브러리나 실험적인 플러그인에서만 동작할 수 있습니다. 일반적인 Next.js + Tailwind 환경에서는 에러가 발생합니다.
+
+2. tw-animate-css:
+- `@import "tw-animate-css";`는 공식 Tailwind 플러그인이 아니며, 해당 패키지가 설치되어 있지 않으면 에러가 발생합니다.
+
+3. CSS 변수 중복/불필요:
+- `@theme inline` 내부의 변수들은 이미 `:root`와 `.dark`에서 정의되어 있습니다. 굳이 중복해서 쓸 필요가 없습니다.
+
+4. TailwindCSS와의 충돌:
+- TailwindCSS는 자체적으로 색상, radius, background 등을 관리합니다. 커스텀 변수와 Tailwind의 변수명이 겹치면 예기치 않은 결과가 나올 수 있습니다.
+
+5. @apply 사용:
+- `@apply border-border outline-ring/50;` 등은 Tailwind의 커스텀 변수와 연동되어야 제대로 동작합니다. 위에서 정의한 CSS 변수가 Tailwind 설정과 일치하지 않으면 적용이 안 될 수 있습니다.
+
+정리:
+- 표준 TailwindCSS 프로젝트라면 `@custom-variant`, `@theme` 구문은 제거해야 하며, 커스텀 변수는 Tailwind 설정 파일(tailwind.config.js)에서 관리하는 것이 좋습니다.
+- tw-animate-css가 필요하다면 패키지 설치와 Tailwind 플러그인 등록이 필요합니다.
+- 불필요한 중복 변수 선언은 줄이세요.
+
+예시로, 아래처럼 정리할 수 있습니다:
+*/
+
+@import "tailwindcss";
+/* @import "tw-animate-css"; // 필요하면 주석 해제 및 패키지 설치 */
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+}
+
+/*
+요약: 
+- @custom-variant, @theme 구문은 표준 CSS가 아니므로 제거해야 합니다.
+- tw-animate-css는 필요시 패키지 설치 및 Tailwind 플러그인 등록 필요.
+- 커스텀 변수는 tailwind.config.js에서 관리하는 것이 더 안전합니다.
+*/
