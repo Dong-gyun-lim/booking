@@ -8,6 +8,7 @@ import type {
   CreateReservationReq,
   ReservationItem,
 } from "@/types/reservation";
+import { addToast } from "@/components/ui/toaster"; // ✅ 커스텀 addToast import
 
 export default function ClientSpaceDetail({ space }: { space: Space }) {
   const [userName, setUserName] = useState("임동균");
@@ -72,24 +73,38 @@ export default function ClientSpaceDetail({ space }: { space: Space }) {
   async function handleReserve() {
     // 간단 유효성
     if (!date || !startTime || !endTime) {
-      alert("날짜와 시간을 설정해 주세요.");
+      addToast({
+        variant: "destructive",
+        title: "입력 오류",
+        description: "날짜와 시간을 설정해 주세요.",
+      });
       return;
     }
     if (people < 1) {
-      alert("인원은 1명 이상이어야 합니다.");
+      addToast({
+        variant: "destructive",
+        title: "입력 오류",
+        description: "인원은 1명 이상이어야 합니다.",
+      });
       return;
     }
-    // 시작 < 종료
     if (timeToMin(startTime) >= timeToMin(endTime)) {
-      alert("시작 시간이 종료 시간보다 빠르도록 설정해 주세요.");
+      addToast({
+        variant: "destructive",
+        title: "시간 오류",
+        description: "시작 시간이 종료 시간보다 빨라야 합니다.",
+      });
       return;
     }
-    // (프론트 선확인) 이미 예약된 구간과 겹치면 막기
     const hasConflict = dayReservations.some((r) =>
       isOverlap(startTime, endTime, r.startTime, r.endTime)
     );
     if (hasConflict) {
-      alert("이미 예약된 시간과 겹칩니다. 다른 시간대를 선택해 주세요.");
+      addToast({
+        variant: "destructive",
+        title: "겹치는 시간",
+        description: "이미 예약된 시간과 겹칩니다.",
+      });
       return;
     }
 
@@ -104,11 +119,17 @@ export default function ClientSpaceDetail({ space }: { space: Space }) {
         people,
       };
       const res = await createReservation(payload);
-      alert(`예약 완료! 예약번호: ${res.reservationId}`);
-      // TODO: 필요 시 router.push("/profile")
+      addToast({
+        title: "예약 완료",
+        description: `예약번호: #${res.reservationId}`,
+      });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "다시 시도해 주세요.";
-      alert(`예약 실패: ${msg}`);
+      addToast({
+        variant: "destructive",
+        title: "예약 실패",
+        description: msg,
+      });
     } finally {
       setSubmitting(false);
     }
